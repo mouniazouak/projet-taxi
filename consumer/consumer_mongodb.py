@@ -7,7 +7,9 @@ from pymongo import MongoClient
 
 TOPIC = os.getenv("KAFKA_TOPIC", "taxi-trips-valid")
 BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+# 127.0.0.1 force la connexion vers le port publié par Docker sous Windows.
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017/")
+GROUP_ID = os.getenv("KAFKA_GROUP_ID", "binome1-mongodb-writer")
 
 print("Connexion à MongoDB...")
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
@@ -22,7 +24,7 @@ collection.create_index(
 consumer = KafkaConsumer(
     TOPIC,
     bootstrap_servers=BOOTSTRAP,
-    group_id="binome1-mongodb-writer",
+    group_id=GROUP_ID,
     auto_offset_reset="earliest",
     enable_auto_commit=True,
     value_deserializer=lambda value: json.loads(value.decode("utf-8")),
