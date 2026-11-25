@@ -1,0 +1,9 @@
+pandas
+pyarrow
+kafka-python
+geopandas
+shapely
+pymongo
+psycopg2-binary
+keplergl
+apache-sedona[spark]
