@@ -5,6 +5,15 @@ print("Lecture du fichier traité...")
 
 df = pd.read_parquet("data/processed_trips.parquet")
 
+# Le fichier traité ne contient pas toujours l'identifiant Kafka.
+# On crée un identifiant stable pour les documents chargés en batch.
+if "trip_id" not in df.columns:
+    df.insert(
+        0,
+        "trip_id",
+        [f"BATCH_{number:06d}" for number in range(1, len(df) + 1)],
+    )
+
 df["tpep_pickup_datetime"] = df["tpep_pickup_datetime"].astype(str)
 df["PULocationID"] = df["PULocationID"].fillna(0).astype(int)
 df["trip_distance"] = df["trip_distance"].fillna(0).astype(float)

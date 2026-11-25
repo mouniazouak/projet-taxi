@@ -13,7 +13,11 @@ print("Connexion à MongoDB...")
 client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
 client.admin.command("ping")
 collection = client["taxi_db"]["taxi_trips"]
-collection.create_index("trip_id", unique=True)
+collection.create_index(
+    "trip_id",
+    unique=True,
+    partialFilterExpression={"trip_id": {"$type": "string"}},
+)
 
 consumer = KafkaConsumer(
     TOPIC,
